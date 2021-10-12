@@ -7,6 +7,10 @@ namespace TrackerLibrary.Models
     public class PersonModel
     {
         /// <summary>
+        /// Id for the person
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// Represents the first name of a person
         /// </summary>
         public string FirstName { get; set; }
@@ -22,5 +26,13 @@ namespace TrackerLibrary.Models
         /// Represenst the phone number of a person
         /// </summary>
         public string CellphoneNumber { get; set; }
+
+        public string FullName
+        {
+            get { 
+                return $"{ FirstName } { LastName }"; 
+            }
+        }
+
     }
 }
