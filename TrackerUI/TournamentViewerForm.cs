@@ -149,8 +149,40 @@ namespace TrackerUI
             LoadMatchups((int)roundDropDown.SelectedItem);
         }
 
+        private string ValidateData()
+        {
+            string o = "";
+            double teamOneScore = 0;
+            double teamTwoScore = 0;
+
+            bool score1Valid = double.TryParse(teamOneScoreValue.Text, out teamOneScore);
+            bool score2Valid = double.TryParse(teamTwoScoreValue.Text, out teamTwoScore);
+
+            if (!score1Valid )
+            {
+                o = "The score one value is not a valid number.";
+            }
+            else if (!score2Valid)
+            {
+                o = "The score two value is not a valid number.";
+            }
+            else if (teamOneScore == 0 && teamTwoScore == 0)
+            {
+                o = "You did not enter a score for either team.";
+            }
+            else if(teamOneScore == teamTwoScore){
+                o = "Game cannot be tied.";
+            }
+            return o;
+        }
         private void scoreButton_Click(object sender, EventArgs e)
         {
+            string error = ValidateData();
+            if (error.Length > 0)
+            {
+                MessageBox.Show(error);
+                return;
+            }
             MatchupModel m = (MatchupModel)matchupListBox.SelectedItem;
             double teamOneScore = 0;
             double teamTwoScore = 0;
@@ -189,42 +221,17 @@ namespace TrackerUI
                     }
                 }
             }
-            if(teamOneScore > teamTwoScore)
+            try
             {
-                //team one wins
-                m.Winner = m.Entries[0].TeamCompeting;
+                TournamentLogic.UpdateTournamentResults(tournament);
             }
-            else if (teamTwoScore > teamOneScore)
+            catch (Exception ex)
             {
-                m.Winner = m.Entries[1].TeamCompeting;
-            }
-            else
-            {
-                MessageBox.Show("Game cannot be tied. A Winner must be determined");
-            }
-
-            foreach (List<MatchupModel> round in tournament.Rounds)
-            {
-                foreach(MatchupModel rm in round)
-                {
-                    foreach (MatchupEntryModel me in rm.Entries)
-                    {
-                        if(me.ParentMatchup != null)
-                        {
-                            if (me.ParentMatchup.Id == m.Id)
-                            {
-                                me.TeamCompeting = m.Winner;
-                                GlobalConfig.Connection.UpdateMatchup(rm);
-                            }
-                        }
-                    }
-                }
+                MessageBox.Show(ex.Message);
+                return;
             }
 
             LoadMatchups((int)roundDropDown.SelectedItem);
-
-
-            GlobalConfig.Connection.UpdateMatchup(m);
         }
     }
 }
