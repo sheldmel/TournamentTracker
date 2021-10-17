@@ -65,7 +65,7 @@ namespace TrackerUI
             this.entryFeeLabel.Name = "entryFeeLabel";
             this.entryFeeLabel.Size = new System.Drawing.Size(125, 37);
             this.entryFeeLabel.TabIndex = 11;
-            this.entryFeeLabel.Text = "Enrty Fee";
+            this.entryFeeLabel.Text = "Entry Fee";
             // 
             // selectTeamDropDown
             // 

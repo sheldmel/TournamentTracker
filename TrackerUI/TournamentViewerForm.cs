@@ -21,14 +21,21 @@ namespace TrackerUI
         public TournamentViewerForm(TournamentModel tournamentModel)
         {
             InitializeComponent();
-            
+        
             tournament = tournamentModel;
+
+            tournament.OnTournamentComplete += Tournament_OnTournamentComplete;
 
             WireUpLists();
 
             LoadFormData();
 
             LoadRounds();
+        }
+
+        private void Tournament_OnTournamentComplete(object sender, DateTime e)
+        {
+            this.Close();
         }
 
         private void LoadFormData()
@@ -221,15 +228,8 @@ namespace TrackerUI
                     }
                 }
             }
-            try
-            {
-                TournamentLogic.UpdateTournamentResults(tournament);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
+
+            TournamentLogic.UpdateTournamentResults(tournament);
 
             LoadMatchups((int)roundDropDown.SelectedItem);
         }
